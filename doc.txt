@@ -1,0 +1,230 @@
+PSPuht V1.2.0
+The new features are described below.
+
+
+What is PSPuht
+
+PSPuht is a development library
+to use head or hand tracking in yours applications.
+
+it allows developers to implement applications
+that can interact with players through the go!Cam.
+
+
+How it works
+
+PSPuht is based on image processing.
+
+Basicaly, it identifies pixels values probably belonging to skin color.
+This, in order to define a monochrome cloud corresponding to the tracked entity.
+Then, it evaluates the cloud position.
+
+
+How to use it
+
+3 pspgu exemples are provided in the same archive than the library.
+And you can read about all of the features below.
+
+Warning
+For better results while using software working with this library,
+please, be aware of the following recommandations :
+
+	Use in a place, well lit by white light
+	Stand back to a white clean wall
+	Wear monochrome clothing, white or gray
+	For head-tracking, wear Turtleneck
+	For hand-tracking, wear long sleeves
+
+
+
+PSPuht for PSP ultimate head/hand tracker.
+Library documentation - v1.2.0
+
+
+/**
+ * Create the ultimate head/hand tracker
+ */
+
+Uht();
+
+
+//New stuff - v1.2.0
+
+/**
+ * Apply grids of pixelization on the cloud.
+ * The grids allows the elimination of parasites.
+ *
+ * For all of grids, you need to give the cell size and
+ * a tolerance relating to the pixels outside the cloud.
+ */
+
+void setGrid(const u8 gSize, vec3i *grids);
+
+
+/**
+ * Define the minimum pixels quantity in the cloud
+ * (corresponding to the tracked entity)
+ *
+ * minimun quantity on x, minimun quantity on y
+ */
+
+void setMinDim(u8 xMin, u8 yMin);
+
+
+//New stuff - v1.2.0
+
+/**
+ * You can define a maximun pixels quantity accepted
+ * between the differents parts of the cloud
+ *
+ * maximun quantity on x, maximun quantity on y
+ */
+
+void setMaxMrg(const u8 xMrg, const u8 yMrg);
+
+
+//New stuff - v1.2.0
+
+/**
+ * Set the Ycbcr threshold type.
+ *
+ * Aivalables types are :
+ *	YCBCR_RESTRICTIVE_THRESH
+ *	YCBCR_APPROPRIATE_THRESH
+ *	YCBCR_PERMISSIVE_THRESH
+ */
+
+void setYcbcrThresh(u8 threshNum);
+
+
+/**
+ * Init the camera and the corresponding video thread.
+ * Pass thread's priority as argument
+ */
+
+int initCam(u8 prop = 0x10);
+
+
+/**
+ * In the case of direct rendering, (without applying the medium filter)
+ * the fist parameter must be a pointer on an allocation of 0x22240 bytes
+ * Else, it must be an allocattion of 0x34E40 bytes.
+ *
+ * The second parameter indicates if we use the direct rendering.
+ * The last parameter indicates if the FB_565 buffer shall be used or not.
+ */
+
+void initBuffer(void *bWork, bool dRender, bool fb565);
+
+
+/**
+ * In all case, it correspond to the camera stream.
+ */
+
+u32 *FB_MPEG;
+
+
+/**
+ * RGBA Buffer (32 bits)
+ *
+ * if we are not in direct rendering, the medium filter is applied
+ */
+
+u32 *FB_8888;
+
+
+/**
+ * RGB_565 buffer (16 bits)
+ * Unable if fb565 is true.
+ *
+ * if we are not in direct rendering, the medium filter is applied
+ */
+
+u16 *FB_565;
+
+
+//New stuff - v1.2.0
+
+/**
+ * Buffer that contains the cloud of pixels on which we work.
+ * the cloud correspond to the traked entity.
+ */
+
+u8 *B_WORK;
+
+
+/**
+ * Contains tracking informations
+ * pOut.x, pOut.y, pOut.z, pOut.w for
+ * X begin, X end, Y begin, Y end
+ */
+
+vec4i pOut;
+
+
+/**
+ * Is true for the case when the camera streaming is working well.
+ */
+
+bool run;
+
+
+/**
+ * Correspond to sceUsbCamGetLensDirection();
+ */
+
+bool direction;
+
+
+//New stuff - v1.2.0
+
+/**
+ * Set it to true before initCam()
+ * if you seek to force the ambient light detection.
+ */
+
+bool checkAmbientLight;
+
+
+/**
+ * Set it to true before delete if you seek to
+ * delete the tracker without unload modules.
+ */
+
+bool relativeClean;
+
+
+/**
+ * Id of the tracker thread.
+ */
+
+int thid;
+
+
+/**
+ * Active the Frame Manager.
+ */
+
+void fm_activated();
+
+
+/**
+ * Return True if the FM is waiting for a "next frame" signal.
+ */
+
+bool fm_isWaiting();
+
+
+/**
+ * Send a "next frame" signal
+ */
+
+void fm_nextFrame();
+
+
+/**
+ * Delete the tracker and unload modules if not relativeClean
+ * else delete the tracker only, wihtout unload modules.
+ */
+
+~Uht();
